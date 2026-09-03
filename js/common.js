@@ -81,7 +81,7 @@
       if (onEvent) socket.on('event', onEvent);
     } else {
       setLive(true, 'polling');
-      const poll = async () => { try { apply(await (await fetch('/api/state')).json()); } catch (e) { /* */ } setTimeout(poll, 1000); };
+      const poll = async () => { try { apply(await (await fetch('/api_state.json')).json()); } catch (e) { /* */ } setTimeout(poll, 1000); };
       poll();
     }
     fetch('/api/health').then((r) => r.json()).then((h) => { const f = $('#footMode'); if (f) f.textContent = `${h.mode} mode · v${h.version}${h.demoFast ? ' · demo fast' : ''}`; }).catch(() => {});
