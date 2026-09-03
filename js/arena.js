@@ -20,7 +20,7 @@
   }
   socket = connectState(onState, (e) => prependFeed($('#feed'), e));
   if (socket) socket.on('cheer', (c) => { R.cheerFx(c.creatureId); $('#cheerCount').textContent = c.count; });
-  fetch('/api/events?limit=30').then((r) => r.json()).then((j) => renderFeed($('#feed'), j.events));
+  fetch('/api_events.json').then((r) => r.json()).then((j) => renderFeed($('#feed'), j.events));
 
   function renderDom() {
     const r = state.raid;
@@ -71,7 +71,7 @@
   $('#board').addEventListener('click', (e) => { const row = e.target.closest('.brow'); if (!row) return; mine = Number(row.dataset.id); toast('cheering for ' + row.querySelector('.name').firstChild.textContent); });
 
   async function loadRecent() {
-    const j = await (await fetch('/api/arena')).json();
+    const j = await (await fetch('/api_arena.json')).json();
     $('#recent').innerHTML = j.recent.map((r) => `<a class="r" href="/raid/${r.id}"><span class="who">${esc(r.boss.name)}<small>${r.participants} fought · ${fmtAgo(r.endedAt || r.startedAt)} ago${r.mvp ? ' · mvp ' + esc(r.mvp.name) : ''}</small></span><span class="st ${r.status}">${r.status === 'won' ? 'defeated' : r.status}</span></a>`).join('') || '<div class="dim mono">no raids yet</div>';
   }
   loadRecent();

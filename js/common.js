@@ -22,7 +22,7 @@
     }
     const bottom = $('#chrome-bottom');
     if (bottom) {
-      bottom.innerHTML = `<footer class="site-footer"><span><b>@trefxworld</b> / trefxx.world</span><span>a creature that lives on x. feed it. send it places. watch it fight.</span><span id="footMode">mock mode</span></footer>`;
+      bottom.innerHTML = `<footer class="site-footer"><span><b>@trefxworld</b> / trefx.world</span><span>a creature that lives on x. feed it. send it places. watch it fight.</span><span id="footMode">mock mode</span></footer>`;
     }
   }
   function setLive(on, text) { const d = $('#liveDot'), t = $('#liveText'); if (d) d.classList.toggle('off', !on); if (t) t.textContent = text; }
@@ -84,7 +84,7 @@
       const poll = async () => { try { apply(await (await fetch('/api_state.json')).json()); } catch (e) { /* */ } setTimeout(poll, 1000); };
       poll();
     }
-    fetch('/api/health').then((r) => r.json()).then((h) => { const f = $('#footMode'); if (f) f.textContent = `${h.mode} mode · v${h.version}${h.demoFast ? ' · demo fast' : ''}`; }).catch(() => {});
+    fetch('/api_health.json').then((r) => r.json()).then((h) => { const f = $('#footMode'); if (f) f.textContent = `${h.mode} mode · v${h.version}${h.demoFast ? ' · demo fast' : ''}`; }).catch(() => {});
     return socket;
   }
 

@@ -24,7 +24,7 @@
   // ---------- activity ----------
   async function loadActivity() {
     try {
-      const a = await (await fetch('/api/activity?limit=25')).json();
+      const a = await (await fetch('/api_activity.json')).json();
       $('#stReplies').textContent = a.replies;
       $('#actMode').innerHTML = a.mode === 'live'
         ? '<span class="badge live">live on x</span> polling mentions every minute'
@@ -53,7 +53,7 @@
   // ---------- creatures ----------
   async function loadCreatures() {
     try {
-      const d = await (await fetch('/api/creatures')).json();
+      const d = await (await fetch('/api_creatures.json')).json();
       const all = (d.creatures || []).slice().sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
       $('#petCount').textContent = `${d.count} creatures, newest first`;
       const grid = $('#pets');

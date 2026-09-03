@@ -65,7 +65,7 @@
   }
   let panelOpenedOnce = false;
   window.__tlSocket = connectState(onState, (e) => prependFeed($('#feed'), e));
-  fetch('/api/events?limit=30').then((r) => r.json()).then((j) => renderFeed($('#feed'), j.events));
+  fetch('/api_events.json').then((r) => r.json()).then((j) => renderFeed($('#feed'), j.events));
 
   // zones legend + list
   const zoneList = Object.entries(TL.map.ZONES).filter(([k]) => k !== 'village');
