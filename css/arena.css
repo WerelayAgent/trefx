@@ -1,0 +1,40 @@
+.arena-wrap { display: grid; grid-template-columns: 1fr 340px; gap: 16px; max-width: 1240px; margin: 0 auto; padding: 18px 22px 0; }
+.stage { position: relative; background: radial-gradient(ellipse at 50% 40%, #1a1512 0%, #0b0f0c 70%); border: 1px solid var(--hair); min-height: 540px; overflow: hidden; }
+body.embed .arena-wrap { grid-template-columns: 1fr; padding: 0; max-width: none; } body.embed .stage { height: 100vh; min-height: 0; border: 0; } body.embed .side { display: none; }
+#arena { display: block; width: 100%; height: 100%; position: absolute; inset: 0; image-rendering: pixelated; }
+.boss-bar { position: absolute; top: 14px; left: 14px; right: 14px; pointer-events: none; }
+.boss-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 12px; margin-bottom: 8px; }
+.boss-head h2 { font-size: 22px; text-shadow: 0 2px 0 #000; }
+.mechs { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.mech { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 4px 8px; border: 1px solid var(--hair); background: rgba(11,15,12,.7); color: var(--dim); }
+.mech.on { color: var(--ember); border-color: rgba(255,122,69,.6); background: rgba(255,122,69,.12); }
+.mech.broken { text-decoration: line-through; opacity: .5; }
+.hp { position: relative; height: 18px; background: rgba(0,0,0,.55); border: 1px solid var(--hair); overflow: hidden; }
+.hp > i { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg, #ff7a45, #ffb347); transition: width .2s linear; box-shadow: 0 0 14px rgba(255,122,69,.5); }
+.hp > span { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 11px; color: #fff; text-shadow: 0 1px 0 #000; letter-spacing: .06em; }
+.overlay { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; padding: 18px 26px; background: rgba(11,15,12,.65); backdrop-filter: blur(6px); border: 1px solid var(--hair); display: none; }
+.overlay.show { display: block; }
+.overlay .big { font-family: var(--display); font-size: 40px; color: var(--ember); line-height: 1.1; margin: 6px 0; }
+.cheer { position: absolute; left: 14px; bottom: 14px; display: flex; align-items: center; gap: 12px; }
+.cheer-btn { position: relative; width: 84px; height: 84px; border: 0; background: var(--ember); color: #1a0d07; font-family: var(--display); font-size: 13px; cursor: pointer; clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 10px, 100% calc(100% - 10px), calc(100% - 10px) 100%, 10px 100%, 0 calc(100% - 10px), 0 10px); transition: transform .1s; box-shadow: 0 0 24px rgba(255,122,69,.35); }
+.cheer-btn:hover { transform: translateY(-2px); }
+.cheer-btn:active { transform: scale(.96); }
+.cheer-btn:disabled { background: #2a2622; color: var(--dim); box-shadow: none; cursor: default; }
+.cheer-btn .ring { position: absolute; inset: 0; background: conic-gradient(rgba(0,0,0,.45) calc(var(--p, 0) * 1%), transparent 0); pointer-events: none; }
+.cheer-btn .lbl { position: relative; }
+.cheer-meta .val { font-family: var(--display); font-size: 24px; color: var(--ember); line-height: 1; }
+.board .brow { display: grid; grid-template-columns: 26px 36px 1fr 70px; gap: 8px; align-items: center; padding: 5px 0; border-bottom: 1px solid var(--hair); font-family: var(--mono); font-size: 12px; }
+.board .brow .rank { color: var(--faint); }
+.board .brow .name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.board .brow .name small { color: var(--dim); }
+.board .brow .dmg { text-align: right; color: var(--text); }
+.board .brow.mvp .dmg { color: var(--gold); }
+.board .brow.downed { opacity: .45; }
+.board .brow .bar { height: 3px; margin-top: 3px; }
+.board canvas { image-rendering: pixelated; display: block; }
+.recent .r { display: grid; grid-template-columns: 1fr auto; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--hair); font-family: var(--mono); font-size: 12px; }
+.recent .r .who { color: var(--text); }
+.recent .r .who small { color: var(--dim); display: block; font-size: 11px; }
+.recent .r .st { color: var(--ember); text-align: right; }
+.recent .r .st.won { color: #7ad08a; }
+@media (max-width: 960px) { .arena-wrap { grid-template-columns: 1fr; } .stage { min-height: 420px; } .overlay .big { font-size: 28px; } .boss-head h2 { font-size: 16px; } }

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>trefx / the arena</title>
+<meta name="description" content="every hour a world boss shows up and every trefx at home fights it together, live.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/arena.css">
+</head>
+<body>
+<div id="chrome-top"></div>
+<main class="arena-wrap">
+  <section class="stage">
+    <canvas id="arena"></canvas>
+    <div class="boss-bar">
+      <div class="boss-head"><div><div class="eyebrow" id="bossEyebrow">world boss</div><h2 id="bossName">-</h2></div><div class="mechs" id="mechs"></div></div>
+      <div class="hp"><i id="hpFill"></i><span id="hpText">-</span></div>
+    </div>
+    <div class="overlay" id="overlay"><div class="eyebrow" id="ovEyebrow">next boss</div><div class="big" id="countdown">-</div><div class="mono dim" id="ovSub">-</div></div>
+    <div class="cheer">
+      <button class="cheer-btn" id="cheerBtn"><span class="ring" id="cheerRing"></span><span class="lbl">cheer</span></button>
+      <div class="cheer-meta"><div class="eyebrow">cheers</div><div class="val" id="cheerCount">0</div><div class="mono dim" style="font-size:10px">+10% dmg for 20s</div></div>
+    </div>
+  </section>
+  <section class="side">
+    <div class="panel cut">
+      <div class="section-head" style="margin-top:0"><h2>damage</h2><span class="eyebrow" id="fighters">- fighting</span></div>
+      <div id="board" class="board"></div>
+    </div>
+    <div class="panel cut" style="margin-top:14px">
+      <div class="section-head" style="margin-top:0"><h2>last raids</h2><span class="eyebrow">replays</span></div>
+      <div id="recent" class="recent"></div>
+    </div>
+  </section>
+</main>
+<section class="below wrap">
+  <div class="grid two">
+    <div><div class="section-head"><h2>activity</h2><span class="eyebrow">order flow</span></div><div class="feed panel cut" id="feed"></div></div>
+    <div><div class="section-head"><h2>how a raid works</h2><span class="eyebrow">1 / 2 / 3</span></div>
+      <div class="how">
+        <div class="step"><div class="n">1</div><h3>a boss shows up</h3><p>every hour. hp scales with how many creatures are home. it comes with one or two tricks: enrage, sleep, shield.</p></div>
+        <div class="step"><div class="n">2</div><h3>everyone at home fights</h3><p>5 ticks a second for up to 3 minutes. creatures get knocked down, never die. hungry ones hit for half.</p></div>
+        <div class="step"><div class="n">3</div><h3>cheer, loot, brag</h3><p>press cheer (or tweet it) for +10% damage. top 10 by damage share get loot, mvp can roll a mythic. a raid card goes to the mvp on x.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+<div id="chrome-bottom"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/arena-render.js"></script>
+<script src="/js/arena.js"></script>
+  <script src="/wallet.js"></script>
+</body>
+</html>

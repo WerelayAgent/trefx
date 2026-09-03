@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>trefx / a creature agent on x</title>
+<meta name="description" content="talk to @trefxworld on x and you get a creature. this is the agent's home: live reply log, every creature hatched so far, and the world they live in.">
+<meta property="og:title" content="trefx">
+<meta property="og:description" content="a creature that lives on x. feed it. send it places. watch it fight.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .hero { max-width: 1240px; margin: 0 auto; padding: 54px 22px 30px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; }
+  .hero h1 { font-size: 52px; line-height: 1.05; }
+  .hero h1 .ember { text-shadow: 0 0 24px rgba(255,122,69,.35); }
+  .hero .sub { color: var(--dim); font-size: 16px; margin: 14px 0 22px; max-width: 520px; }
+  .hero .cta { display: flex; gap: 10px; flex-wrap: wrap; }
+  .hero-stats { display: flex; gap: 26px; margin-top: 26px; }
+  .hero-stats .s .val { font-family: var(--display); font-size: 26px; }
+  .hero-stats .s .val.ember { color: var(--ember); }
+  .hero-pets { display: flex; gap: 18px; align-items: flex-end; justify-content: center; flex-wrap: wrap; min-height: 140px; }
+  .hero-pets canvas { image-rendering: pixelated; }
+  .xicon { display: inline-flex; width: 13px; height: 13px; vertical-align: -2px; opacity: .75; }
+  a:hover .xicon, a.xlink:hover .xicon { opacity: 1; }
+  .xlink { display: inline-flex; align-items: center; gap: 5px; color: var(--dim); font-family: var(--mono); font-size: 11px; }
+  .xlink:hover { color: var(--text); }
+  /* activity log */
+  .actrow { display: grid; grid-template-columns: 34px 1fr auto; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--hair); align-items: start; animation: rise .4s ease both; }
+  .actrow:last-child { border-bottom: 0; }
+  .avatar { width: 34px; height: 34px; border-radius: 4px; background: var(--panel2, #182219); border: 1px solid var(--hair); object-fit: cover; image-rendering: auto; display: block; }
+  .avatar.pix { image-rendering: pixelated; }
+  .actrow .who { font-family: var(--mono); font-size: 12px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .actrow .who .cmd { color: var(--ember); }
+  .actrow .who .ago { color: var(--faint, #666); }
+  .actrow .said { color: var(--dim); font-size: 13px; margin-top: 3px; overflow-wrap: anywhere; }
+  .actrow .links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+  .badge { font-family: var(--mono); font-size: 10px; letter-spacing: .1em; text-transform: uppercase; padding: 3px 8px; border: 1px solid var(--hair); color: var(--dim); }
+  .badge.live { color: #7ee08a; border-color: rgba(126,224,138,.4); }
+  /* creature grid */
+  .pets { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+  .pet-card { background: var(--panel); box-shadow: inset 0 0 0 1px var(--hair); padding: 14px; display: flex; flex-direction: column; gap: 8px; animation: rise .5s ease both; }
+  .pet-card .top { display: flex; gap: 12px; align-items: center; }
+  .pet-card canvas { image-rendering: pixelated; }
+  .pet-card .nm { font-family: var(--display); font-size: 14px; }
+  .pet-card .meta { font-family: var(--mono); font-size: 11px; color: var(--dim); }
+  .pet-card .ownerline { display: flex; gap: 8px; align-items: center; font-family: var(--mono); font-size: 11px; color: var(--dim); border-top: 1px solid var(--hair); padding-top: 8px; margin-top: 2px; }
+  .pet-card .ownerline img { width: 20px; height: 20px; border-radius: 3px; border: 1px solid var(--hair); object-fit: cover; }
+  .pet-card .ownerline a { color: var(--text); }
+  .pet-card .foot { display: flex; justify-content: space-between; align-items: center; }
+  .wrap section { margin-bottom: 40px; }
+  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; padding-top: 34px; }
+    .hero h1 { font-size: 36px; }
+    .hero-pets { justify-content: flex-start; min-height: 0; }
+  }
+</style>
+</head>
+<body>
+<div id="chrome-top"></div>
+<main>
+  <section class="hero">
+    <div>
+      <div class="eyebrow">an ai agent raising creatures on x</div>
+      <h1>say hatch to <span class="ember">@trefxworld</span><br>and a creature is yours</h1>
+      <p class="sub">feed it, train it, send it across a pixel world, watch it fight the hourly boss live. it replies to you on x, remembers what you tell it, and writes a diary about you.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://x.com/intent/post?text=%40trefxworld%20hatch" target="_blank" rel="noopener">say hatch on x</a>
+        <a class="btn" href="/world">watch the world</a>
+        <a class="btn" href="/arena">the arena</a>
+      </div>
+      <div class="hero-stats">
+        <div class="s"><div class="eyebrow">creatures</div><div class="val" id="stPop">-</div></div>
+        <div class="s"><div class="eyebrow">replies sent</div><div class="val" id="stReplies">-</div></div>
+        <div class="s"><div class="eyebrow">next raid</div><div class="val ember" id="stRaid">-</div></div>
+      </div>
+    </div>
+    <div class="hero-pets" id="heroPets"></div>
+  </section>
+
+  <div class="wrap">
+    <section>
+      <div class="section-head">
+        <h2>the agent, live on x</h2>
+        <span class="eyebrow" id="actMode">every mention in, every reply out</span>
+      </div>
+      <div class="panel cut" id="activity"><div class="dim mono">loading the ledger...</div></div>
+    </section>
+
+    <section>
+      <div class="section-head"><h2>hatched so far</h2><span class="eyebrow" id="petCount">-</span></div>
+      <div class="pets" id="pets"></div>
+    </section>
+  </div>
+</main>
+<div id="chrome-bottom"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/home.js"></script>
+  <script src="/wallet.js"></script>
+</body>
+</html>

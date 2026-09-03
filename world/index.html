@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>trefx / the world map</title>
+<meta name="description" content="talk to @trefxworld on x and you get a creature. feed it, send it on expeditions across a pixel world, watch it raid the hourly world boss live.">
+<meta property="og:title" content="trefx / the world">
+<meta property="og:description" content="a creature that lives on x. feed it. send it places. watch it fight.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<style>
+  .world { position: relative; height: calc(100vh - var(--header-h) - 30px); min-height: 420px; background: #07110c; overflow: hidden; }
+  body.embed .world { height: 100vh; }
+  #map { display: block; width: 100%; height: 100%; image-rendering: pixelated; image-rendering: crisp-edges; cursor: grab; touch-action: none; }
+  #map.drag { cursor: grabbing; }
+  .hud { position: absolute; top: 14px; left: 14px; display: flex; gap: 10px; flex-wrap: wrap; pointer-events: none; }
+  .hud .stat { pointer-events: auto; background: rgba(11,15,12,.78); backdrop-filter: blur(8px); border: 1px solid var(--hair); padding: 8px 12px; min-width: 110px; }
+  .hud .stat .eyebrow { font-size: 10px; }
+  .hud .stat .val { font-family: var(--display); font-size: 18px; line-height: 1.2; }
+  .hud .stat .val.ember { color: var(--ember); }
+  .hud-right { position: absolute; top: 14px; right: 14px; display: flex; gap: 8px; flex-direction: column; align-items: flex-end; }
+  .zoomer { display: flex; gap: 4px; } .zoomer .btn { background: rgba(11,15,12,.85); backdrop-filter: blur(6px); }
+  .legend { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 6px; flex-wrap: wrap; max-width: 60%; }
+  .legend .chip { margin: 0; background: rgba(11,15,12,.78); cursor: pointer; }
+  .legend .chip:hover { border-color: rgba(255,255,255,.25); }
+  .hint { position: absolute; right: 14px; bottom: 14px; font-family: var(--mono); font-size: 10px; color: var(--dim); background: rgba(11,15,12,.6); padding: 4px 8px; }
+  #arenaBtn.raidlive { background: #ff4d3d; border-color: #ff4d3d; animation: raidpulse 1s ease-in-out infinite; }
+  @keyframes raidpulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(255,77,61,.5); } 50% { box-shadow: 0 0 18px 4px rgba(255,77,61,.35); } }
+  /* side panel */
+  #panel { position: absolute; top: 0; right: 0; bottom: 0; width: 360px; max-width: 92vw; background: rgba(19,26,21,.94); backdrop-filter: blur(10px); border-left: 1px solid var(--hair); transform: translateX(105%); transition: transform .25s ease; overflow-y: auto; padding: 18px; z-index: 5; }
+  #panel.open { transform: none; }
+  #panel .close { position: absolute; top: 12px; right: 12px; }
+  #panel .hero { display: flex; gap: 14px; align-items: flex-end; }
+  #panel .hero canvas { image-rendering: pixelated; }
+  #panel h2 { font-size: 20px; }
+  #panel .row { margin-top: 14px; }
+  #pActivity { font-family: var(--mono); font-size: 12px; color: var(--text); }
+  #pDiary { font-size: 13px; color: var(--dim); font-style: italic; }
+  @media (max-width: 720px) {
+    .world { height: 62vh; }
+    #panel { top: auto; height: 62%; width: 100%; max-width: none; border-left: 0; border-top: 1px solid var(--hair); transform: translateY(105%); }
+    .hud .stat { min-width: 84px; padding: 6px 9px; } .hud .stat .val { font-size: 14px; }
+    .legend { display: none; } .hint { display: none; }
+    .hud-right { top: auto; bottom: 14px; flex-direction: row; align-items: center; }
+  }
+  .below { max-width: 1240px; margin: 0 auto; padding: 26px 22px; }
+</style>
+</head>
+<body>
+<div id="chrome-top"></div>
+<main>
+  <section class="world" id="world">
+    <canvas id="map"></canvas>
+    <div class="hud">
+      <div class="stat"><div class="eyebrow">population</div><div class="val" id="pop">-</div></div>
+      <div class="stat"><div class="eyebrow">away</div><div class="val" id="away">-</div></div>
+      <div class="stat"><div class="eyebrow" id="raidLabel">next raid</div><div class="val ember" id="raidCd">-</div></div>
+    </div>
+    <div class="hud-right">
+      <a class="btn primary small" href="/arena" id="arenaBtn">watch the arena</a>
+      <div class="zoomer"><button class="btn small" id="zoomOut">-</button><button class="btn small" id="zoomIn">+</button><button class="btn small" id="zoomHome">village</button></div>
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="hint">drag to pan · wheel to zoom · click a creature</div>
+    <aside id="panel">
+      <button class="btn small close" id="pClose">close</button>
+      <div class="hero"><canvas id="pSprite"></canvas><div><div class="eyebrow" id="pSpecies">-</div><h2 id="pName">-</h2><div class="mono dim" id="pOwner">-</div></div></div>
+      <div class="row"><div class="kv"><span>stage <b id="pStage">-</b></span><span>level <b id="pLevel">-</b></span></div><div class="bar"><i id="pXp" style="width:0"></i></div></div>
+      <div class="row"><div class="kv"><span>hunger</span><b id="pHungerT">-</b></div><div class="bar green"><i id="pHunger" style="width:0"></i></div></div>
+      <div class="row grid three" style="gap:8px">
+        <div><div class="kv"><span>atk</span><b id="pAtk">-</b></div><div class="bar"><i id="pAtkB"></i></div></div>
+        <div><div class="kv"><span>def</span><b id="pDef">-</b></div><div class="bar blue"><i id="pDefB"></i></div></div>
+        <div><div class="kv"><span>spd</span><b id="pSpd">-</b></div><div class="bar purple"><i id="pSpdB"></i></div></div>
+      </div>
+      <div class="row"><div class="eyebrow">right now</div><div id="pActivity">-</div></div>
+      <div class="row"><div class="eyebrow">traits</div><div id="pTraits"></div></div>
+      <div class="row"><div class="eyebrow">last diary line</div><div id="pDiary">-</div></div>
+      <div class="row" style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn small" id="pWatch">watch</button><a class="btn small" id="pPage" href="#">creature page</a><button class="btn small" id="pCheer" hidden>cheer</button></div>
+    </aside>
+  </section>
+
+  <section class="below">
+    <div class="grid two">
+      <div>
+        <div class="section-head"><h2>activity</h2><span class="eyebrow">time / owner / verb / object</span></div>
+        <div class="feed panel cut" id="feed"></div>
+      </div>
+      <div>
+        <div class="section-head"><h2>how it works</h2><span class="eyebrow">three steps, no wallet</span></div>
+        <div class="how">
+          <div class="step"><div class="n">1</div><h3>say hatch</h3><p>tweet "@trefxworld hatch" and a creature is seeded from your username. one per person. it lives at the village.</p></div>
+          <div class="step"><div class="n">2</div><h3>feed it, send it</h3><p>"feed it tacos", "train spd", "send it to the bog". it walks there on this map, finds loot, meets other creatures, writes a diary about you.</p></div>
+          <div class="step"><div class="n">3</div><h3>raid together</h3><p>every hour a boss shows up. every creature at home fights it live in the arena. cheer to buff yours. top damage gets the loot.</p></div>
+        </div>
+        <div class="panel cut" style="margin-top:18px">
+          <div class="eyebrow">zones</div>
+          <div id="zones" class="mono" style="font-size:12px;margin-top:8px;line-height:1.9"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+<div id="chrome-bottom"></div>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/shared.js"></script>
+<script src="/js/common.js"></script>
+<script src="/js/world.js"></script>
+  <script src="/wallet.js"></script>
+</body>
+</html>
